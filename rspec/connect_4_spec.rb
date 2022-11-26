@@ -2,6 +2,10 @@ require_relative '../connect_4'
 # testing file for the Odin project's connect four project using TDD.
 # author: Malcolm Bailey
 describe ConnectFour do
+  describe '#start_game' do
+    it 'Loads the empty board and prompts player 1 to move' do
+    end
+  end
   describe '#player_input' do
     context 'When user provides valid input' do
       it 'accepts player input and makes move' do
