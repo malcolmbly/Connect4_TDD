@@ -4,16 +4,35 @@ require_relative '../connect_4.rb'
 describe ConnectFour do
 
   describe '#initialize' do
-    context 'player presses enter to start game' do
-      it 'Loads the empty board and prompts player 1 to move' do
-        allow(game_start).to receive(:gets).and_return('\n')
-        expect(game_start).to receive(:start_game).once
-        subject(:game_start) { described_class.new }
+    context 'player presses any button to start game' do
+      it 'receives player input and begins game' do
+        subject { described_class.new }
+        allow(subject).to receive(:gets).and_return('\n')
+        expect(subject).to receive(:play_game).once
+        subject.start_game
       end
     end
   end
 
-  describe '#player_move' do
+  describe '#prompt_player_move' do
+    context 'receives valid player input' do
+      it 'returns the input' do
+        subject { described_class.new }
+        allow(subject).to receive(:gets).and_return('2')
+        expect(subject.prompt_player_move).to eql('2')
+      end
+    end
+
+    context 'receives invalid input twice, then valid input' do
+      it 'returns the final input' do
+        subject { described_class.new }
+        allow(subject).to receive(:gets).and_return('a', '', '4')
+        expect(subject.prompt_player_move).to eql('4')
+      end
+    end
+  end
+
+  describe '#place_piece' do
     subject(:game_start) { described_class.new }
     context 'When user provides valid move' do
       it 'puts piece on bottom of an empty column' do
@@ -23,6 +42,7 @@ describe ConnectFour do
       end
 
       it 'puts piece on top of a filled column spot' do
+        game_start.turn = 2
         2.times { game_start.place_piece(3) }
         game_board = game_start.instance_variable_get(:@board)
         expect(game_board[2][1]).to eql(2)
